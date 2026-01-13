@@ -3,13 +3,14 @@ import "../theme/Home.css";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../assets/togglenest-bg.png";
 
-
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="home">
-      {/* dark gradient overlay */}
+    <section
+      className="home"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="home-overlay"></div>
 
       <div className="home-container">
@@ -26,17 +27,10 @@ const Home = () => {
           </p>
 
           <div className="home-buttons">
-            <button
-              onClick={() => navigate("/login")}
-              className="home-btn login"
-            >
+            <button onClick={() => navigate("/login")} className="home-btn login">
               Login
             </button>
-
-            <button
-              onClick={() => navigate("/signup")}
-              className="home-btn signup"
-            >
+            <button onClick={() => navigate("/signup")} className="home-btn signup">
               Get Started
             </button>
           </div>

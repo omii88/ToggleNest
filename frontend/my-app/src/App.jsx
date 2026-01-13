@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
@@ -11,9 +12,14 @@ import Analytics from "./pages/Analytics";
 import TeamPage from "./pages/TeamPage";
 
 function App() {
+  const location = useLocation();
+
+  const hideNavbarRoutes = ["/login", "/signup"];
+  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
+
   return (
     <>
-      <Navbar />
+      {shouldShowNavbar && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
