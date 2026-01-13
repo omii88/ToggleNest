@@ -50,39 +50,43 @@
 
 /* Logo - epic gradient with glow pulse */
 .navbar__logo {
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: 1px;
-  background: linear-gradient(135deg, var(--accent-2), var(--accent), #fbbf24);
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #3a7a65 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  position: relative;
-  transition: all 0.4s ease;
   cursor: pointer;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: none; /* Clean - no glow on default */
+  padding: 8px 0;
 }
 
 .navbar__logo::after {
   content: "";
   position: absolute;
-  bottom: -4px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-radius: 1px;
-  transition: width 0.4s ease;
-  box-shadow: 0 0 8px var(--accent);
+  height: 3px;
+  background: linear-gradient(90deg, var(--secondary), var(--accent));
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
 }
 
 .navbar__logo:hover {
-  text-shadow: 0 0 24px rgba(124,58,237,0.6);
+  transform: translateY(-1px);
 }
 
 .navbar__logo:hover::after {
   width: 80px;
 }
+
+
 
 /* Navigation links - glass pills with neon underlines */
 .navbar__links {

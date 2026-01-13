@@ -182,3 +182,15 @@
     font-size: 16px; /* Prevents zoom on iOS */
   }
 }
+.guest-emoji {
+  font-size: 20px;           /* Emoji size */
+  margin-left: 8px;
+  width: 40px;               /* Circle width */
+  height: 40px;              /* Circle height */
+  display: flex;             /* To center the emoji */
+  align-items: center;       /* Vertical center */
+  justify-content: center;   /* Horizontal center */
+  background-color: #ccc;    /* Light grey circle */
+  border-radius: 50%;        /* Makes it a perfect circle */
+  cursor: default;           /* Optional: makes it feel like an avatar */
+}
