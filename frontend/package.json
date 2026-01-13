@@ -1,7 +1,21 @@
 {
+  "name": "togglenest-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "icons": "^1.0.0",
+    "axios": "^1.13.2",
     "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-router-dom": "^7.11.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite": "^5.0.0"
   }
 }

@@ -4,6 +4,11 @@ import Topbar from "../components/Topbar";
 import StatCard from "../components/StatCard";
 import ActivityItem from "../components/ActivityItem";
 import "../theme/Dashboard.css";
+import api from "../api/axios";
+import CreateTaskPopup from "../components/CreateTask";
+import CreateProjectPopup from "../components/CreateProject";
+
+
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -11,6 +16,10 @@ const Dashboard = () => {
   const [sprints, setSprints] = useState([]);
   const [members, setMembers] = useState(["You"]);
   const [workspaceStorage, setWorkspaceStorage] = useState({ used: 0, total: 10 });
+  const [showTaskPopup, setShowTaskPopup] = useState(false);
+  const [showProjectPopup, setShowProjectPopup] = useState(false);
+
+
 
   // Delete modal state
   const [deleteModal, setDeleteModal] = useState({ visible: false, type: "", index: null });
@@ -55,6 +64,8 @@ const Dashboard = () => {
       size: 0.1,
       action: `created task '${task.name}'`,
       time: getCurrentTime(),
+
+      
     };
     setTasks([...tasks, newTask]);
     setWorkspaceStorage(prev => ({ ...prev, used: prev.used + newTask.size }));
@@ -94,6 +105,13 @@ const Dashboard = () => {
         <Topbar />
         <h2>Dashboard Overview</h2>
         <p className="muted-text">Welcome back! Here's what's happening.</p>
+        {/* <button
+  className="btn btn-primary"
+  onClick={() => setShowTaskPopup(true)}
+>
+  New Task
+</button> */}
+
 
         {/* STAT CARDS */}
         <div className="stats-grid">
@@ -101,8 +119,8 @@ const Dashboard = () => {
           <StatCard title="Total Tasks" value={tasks.length} />
           <StatCard title="Team Velocity" value={teamVelocity} />
           <StatCard title="Deadlines" value={deadlines} />
-          <StatCard title="My Projects" value={projects.length} />
-          <StatCard title="My Tasks" value={tasks.length} />
+          {/* <StatCard title="My Projects" value={projects.length} />
+          <StatCard title="My Tasks" value={tasks.length} /> */}
         </div>
 
         {/* ACTIVITY + PROGRESS */}
@@ -226,7 +244,57 @@ const Dashboard = () => {
           )}
 
       </div>
+
+      
+             <CreateTaskPopup
+        showTaskPopup={showTaskPopup}
+        setShowTaskPopup={setShowTaskPopup}
+        onTaskCreated={(task) => {
+          setTasks((prev) => [
+            ...prev,
+            {
+              _id: task._id,
+              name: task.title,
+              deadline: task.dueDate,
+              user: "You",
+              completed: false,
+              action: `created task '${task.title}'`,
+              time: new Date().toISOString(),
+            },
+          ]);
+        }}
+      />
+
+      <CreateProjectPopup
+  show={showProjectPopup}
+  onClose={() => setShowProjectPopup(false)}
+  onProjectCreated={(project) => {
+    setProjects((prev) => [...prev, project]);
+  }}
+/>
+
+
+      {/* <CreateTaskPopup
+  showTaskPopup={showTaskPopup}
+  setShowTaskPopup={setShowTaskPopup}
+  onTaskCreated={(task) => {
+    setTasks((prev) => [
+      ...prev,
+      {
+        _id: task._id,
+        name: task.title,
+        deadline: task.dueDate,
+        user: "You",
+        completed: false,
+        action: `created task '${task.title}'`,
+        time: new Date().toISOString(),
+      },
+    ]);
+  }}
+/> */}
+
     </div>
+    
   );
 };
 

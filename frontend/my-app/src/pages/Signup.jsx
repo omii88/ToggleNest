@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import "../theme/Auth.css";
 
 const Signup = () => {
@@ -9,23 +10,31 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Simple validation (you can expand this)
     if (!name || !email || !password) {
       alert("Please fill all fields");
       return;
     }
 
-    localStorage.setItem("username", name);
-    localStorage.setItem("email", email);
-    localStorage.setItem("password", password); // only for demo, not secure
+    try {
+      // 🔥 CALL BACKEND REGISTER API
+      await api.post("/auth/register", {
+        name,
+        email,
+        password
+      });
 
-    // Set loggedIn flag when signing up
-    // localStorage.setItem("loggedIn", "true");
+      alert("Signup successful! Please login.");
 
-    navigate("/login"); // redirect using React Router
+      // 🔥 redirect to login page
+      navigate("/login");
+
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.msg || "Signup failed");
+    }
   };
 
   return (
@@ -40,6 +49,7 @@ const Signup = () => {
           onChange={(e) => setName(e.target.value)}
           required
         />
+
         <input
           type="email"
           placeholder="Email"
@@ -47,6 +57,7 @@ const Signup = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+
         <input
           type="password"
           placeholder="Password"
