@@ -6,6 +6,7 @@ import {
   FiGrid, FiSun, FiList, FiTrash2, FiAlertTriangle,
 } from "react-icons/fi";
 
+
 const SprintPage = () => {
   const [showCreateSprint, setShowCreateSprint] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -20,14 +21,25 @@ const SprintPage = () => {
     show: false, id: null, name: '', type: '' 
   });
 
-  // ✅ FIXED: Separate original backlog + current filtered
-  const [originalBacklogItems, setOriginalBacklogItems] = useState([]);
-  const [backlogItems, setBacklogItems] = useState([]);
-  const [showFilterMenu, setShowFilterMenu] = useState(false);
-  const [showBacklogForm, setShowBacklogForm] = useState(false);
-  const [newItem, setNewItem] = useState({ 
-    name: '', epic: 'Auth', priority: 'High', assignee: '', status: 'To Do' 
-  });
+ const [originalBacklogItems, setOriginalBacklogItems] = useState([]);
+const [backlogItems, setBacklogItems] = useState([]);
+const [showFilterMenu, setShowFilterMenu] = useState(false);
+const [showBacklogForm, setShowBacklogForm] = useState(false);
+const [newItem, setNewItem] = useState({ 
+  name: '',
+  epic: 'Auth',
+  priority: 'High',
+  assignee: '',
+  status: 'To Do'
+});
+useEffect(() => {
+  // initialize original backlog ONLY ONCE
+  if (originalBacklogItems.length === 0 && backlogItems.length > 0) {
+    setOriginalBacklogItems(backlogItems);
+  }
+}, [backlogItems, originalBacklogItems]);
+
+
 
   const createSprint = () => {
     const name = document.getElementById('sprintName').value;
@@ -139,7 +151,6 @@ const SprintPage = () => {
     setBacklogItems(filtered);
   };
 
-  const activeSprint = sprints.find(s => s.active);
 
   return (
     <div className="sprint-wrapper" onClick={handleCloseContextMenu}>
@@ -158,34 +169,52 @@ const SprintPage = () => {
           </button>
         </div>
       </div>
+{/* MAIN SPRINT CARD - ALL SPRINTS STACKED */}
+<div className="sprint-empty has-active-sprint">
+  {sprints.length === 0 ? (
+    <>
+      <h3>No Active Sprint</h3>
+      <p>Create a sprint to start planning your work</p>
+      <button className="sprint-btn-primary" onClick={() => setShowCreateSprint(true)}>
+        <FiPlus /> Create Sprint
+      </button>
+    </>
+  ) : (
+    <div className="sprint-list-scroll">
+      {sprints.map((sprint) => (
+        <div
+          key={sprint.id}
+          className={`active-sprint-card stacked ${sprint.active ? 'active' : ''}`}
+          onContextMenu={(e) => handleContextMenu(e, sprint.id, 'sprint')}
+        >
+          <div className="active-sprint-header">
+            <div className={`sprint-icon ${sprint.active ? 'blue' : 'gray'}`}>
+              🏃‍♂️
+            </div>
 
-      {/* ACTIVE SPRINT */}
-      <div className={`sprint-empty ${activeSprint ? 'has-active-sprint' : ''}`} 
-           onContextMenu={(e) => activeSprint && handleContextMenu(e, activeSprint.id, 'sprint')}>
-        {activeSprint ? (
-          <div className="active-sprint-card">
-            <div className="active-sprint-header">
-              <div className="sprint-icon blue">🏃‍♂️</div>
-              <div>
-                <h3>{activeSprint.name}</h3>
-                <div className="sprint-dates">
-                  {activeSprint.startDate.slice(5, 10).replace('-', '/')} - 
-                  {activeSprint.endDate.slice(5, 10).replace('-', '/')}
-                </div>
+            <div className="sprint-info">
+              <h3>{sprint.name}</h3>
+              <div className="sprint-dates">
+                {sprint.startDate.slice(5, 10).replace('-', '/')} –
+                {sprint.endDate.slice(5, 10).replace('-', '/')}
               </div>
             </div>
-            <div className="sprint-goal">{activeSprint.goal || 'No goal set'}</div>
+
+            {sprint.active && (
+              <span className="active-pill">ACTIVE</span>
+            )}
           </div>
-        ) : (
-          <>
-            <h3>No Active Sprint</h3>
-            <p>Create a sprint to start planning your work</p>
-            <button className="sprint-btn-primary" onClick={() => setShowCreateSprint(true)}>
-              <FiPlus /> Create Sprint
-            </button>
-          </>
-        )}
-      </div>
+
+          <div className="sprint-goal">
+            {sprint.goal || 'No sprint goal defined'}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+      
 
       {/* PRODUCT BACKLOG */}
       <div className="sprint-card">
