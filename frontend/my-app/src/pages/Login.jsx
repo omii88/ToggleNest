@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import "../theme/Auth.css";
 
 const Login = () => {
@@ -7,15 +8,27 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (email && password) {
-      sessionStorage.setItem("loggedIn", "true");
-       // set login flag
-      navigate("/dashboard"); // redirect using react-router
-    } else {
-      alert("Please enter email and password");
+    try {
+      // 🔥 CALL BACKEND LOGIN API
+      const res = await api.post("/auth/login", {
+        email,
+        password,
+      });
+
+      // 🔥 SAVE JWT TOKEN
+      localStorage.setItem("token", res.data.token);
+
+      // optional: save user info
+      // localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // 🔥 REDIRECT TO DASHBOARD
+      navigate("/dashboard");
+
+    } catch (error) {
+      alert(error.response?.data?.msg || "Login failed");
     }
   };
 
@@ -31,6 +44,7 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+
         <input
           type="password"
           placeholder="Password"
@@ -39,9 +53,7 @@ const Login = () => {
           required
         />
 
-        <button className="auth-btn" type="submit">
-          Login
-        </button>
+        <button className="auth-btn" type="submit">Login</button>
 
         <p className="auth-text">
           Don't have an account? <a href="/signup">Signup</a>
