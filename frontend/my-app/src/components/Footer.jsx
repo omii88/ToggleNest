@@ -37,41 +37,11 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="footer__nav">
-            <h4 className="footer__nav-title">Company</h4>
-            <ul className="footer__nav-links">
-              <li><a href="/about">About</a></li>
-              <li><a href="/careers">Careers</a></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div>
+          
         </div>
 
         {/* Social & Contact */}
-        <div className="footer__social-section">
-          <div className="footer__social">
-            <div className="footer__social-icons">
-              <a href="#" aria-label="Facebook" className="social-link">
-                <FaFacebookF />
-              </a>
-              <a href="#" aria-label="Twitter" className="social-link">
-                <FaTwitter />
-              </a>
-              <a href="#" aria-label="LinkedIn" className="social-link">
-                <FaLinkedinIn />
-              </a>
-              <a href="#" aria-label="Instagram" className="social-link">
-                <FaInstagram />
-              </a>
-            </div>
-            
-            <div className="footer__contact">
-              <p><FaEnvelope className="contact-icon" /> hello@togglenest.com</p>
-              <p><FaPhone className="contact-icon" /> +1 (555) 123-4567</p>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       {/* Bottom Bar */}
