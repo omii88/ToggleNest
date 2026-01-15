@@ -1,4 +1,4 @@
-// Update ActivityItem.jsx
+// Updated ActivityItem.jsx
 import React from "react";
 import "../theme/Dashboard.css";
 
@@ -20,8 +20,12 @@ const ActivityItem = ({ user, action, time, onContextMenu }) => {
       className="activity-item"
       onContextMenu={onContextMenu} // Right-click opens delete modal
     >
+      {/* Human emoji before username */}
+      <span className="activity-user-emoji" role="img" aria-label="user">
+        🧑
+      </span>
       <strong>{user}</strong> {action}
-      <span>{getRelativeTime(time)}</span>
+      <span className="activity-time">{getRelativeTime(time)}</span>
     </div>
   );
 };
