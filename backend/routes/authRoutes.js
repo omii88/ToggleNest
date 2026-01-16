@@ -5,18 +5,18 @@ const router = express.Router();
 const { register, login, getMe } = require("../controllers/authController");
 
 // middleware
-const auth = require("../middleware/authMiddleware");
+const auth = require("../middleware/auth.middleware");
 
 // public routes
 router.post("/register", register);
 router.post("/login", login);
-router.get("/me", auth, getMe);
 
-// 🔐 protected route
+// protected routes
+router.get("/me", auth, getMe);
 router.get("/profile", auth, (req, res) => {
   res.json({
     msg: "Protected route accessed",
-    user: req.user
+    user: req.user,
   });
 });
 
