@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import Swal from "sweetalert2";
 import api from "../api/axios";
 
 
@@ -25,14 +26,18 @@ const CreateTaskPopup = ({ showTaskPopup, setShowTaskPopup, onTaskCreated }) => 
       });
 
       // 🔁 Notify parent (Dashboard) if needed
-      if (onTaskCreated) {
-        onTaskCreated(res.data);
+      // if (onTaskCreated) {
+      //   onTaskCreated(res.data);
+      // }
+      if (res.data) {
+        Swal.fire("Task Created!", "Your task is now active.", "success");
+        // console.log("Created Task:", res.data);
+        setNameValue(res.data.title);
+        setDeadlineValue(res.data.dueDate || "");
+        setShowTaskPopup(false);
       }
-
       // ✅ Reset & close popup
-      setNameValue("");
-      setDeadlineValue("");
-      setShowTaskPopup(false);
+      
 
     } catch (error) {
       console.error(error);

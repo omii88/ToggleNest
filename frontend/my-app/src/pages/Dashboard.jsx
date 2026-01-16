@@ -30,6 +30,14 @@ const Dashboard = () => {
       document.body.classList.remove("modal-open");
     }
   }, [deleteModal.visible]);
+
+  // useEffect(() => {
+  //   // You can add any side effects related to authentication status here
+  //   if (!token) {
+  //     // User is logged in
+  //     navigate("/signup");
+  //   }
+  // }, []);
   const getCurrentTime = () => new Date().toISOString();
 
   const addProject = (project) => {
@@ -97,9 +105,31 @@ const Dashboard = () => {
     setDeleteModal({ visible: false, type: "", index: null });
   };
 
+
+
+// 🔥 Load tasks from backend
+const loadTasks = async () => {
+  try {
+    const res = await api.get("/tasks/my");
+    console.log("Loaded Tasks:", res.data);
+    setTasks(res.data);
+  } catch (err) {
+    console.error("Error loading tasks:", err);
+  }
+};
+
+useEffect(() => {
+  loadTasks();  // 🔥 Load tasks on page load
+}, []);
+
+
   return (
     <div className="dashboard-layout">
-      <Sidebar addProject={addProject} addTask={addTask} />
+      <Sidebar
+  openTaskPopup={() => setShowTaskPopup(true)}
+  openProjectPopup={() => setShowProjectPopup(true)}
+/>
+
 
       <div className="dashboard-content">
         <Topbar />
@@ -131,18 +161,30 @@ const Dashboard = () => {
               <p className="empty-text">Create a project or task to see recent activity</p>
             ) : (
               <>
-                {tasks.map((task, i) => (
-                  <ActivityItem
-                    key={`task-${i}`}
-                    user={task.user}
-                    action={`${task.action}${task.deadline ? ` (Deadline: ${task.deadline})` : ""}`}
-                    time={task.time}
-                    onContextMenu={(e) => {
-                      e.preventDefault(); // prevent browser context menu
-                      handleDeleteClick("task", i);
-                    }}
-                  />
-                ))}
+              {tasks.length + projects.length === 0 ? (
+  <p className="empty-text">Create a project or task to see recent activity</p>
+) : (
+  <>
+    {tasks.map((task) => (
+      <ActivityItem
+        key={task._id}
+        user="You"
+        action={`Created task: ${task.title}`}
+        time={new Date(task.createdAt).toLocaleString()}
+      />
+    ))}
+
+    {projects.map((project, i) => (
+      <ActivityItem
+        key={`project-${i}`}
+        user={project.user}
+        action={`Created project: ${project.name}`}
+        time={project.time}
+      />
+    ))}
+  </>
+)}
+
                 {projects.map((project, i) => (
                   <ActivityItem
                       key={`project-${i}`}
@@ -274,24 +316,6 @@ const Dashboard = () => {
 />
 
 
-      {/* <CreateTaskPopup
-  showTaskPopup={showTaskPopup}
-  setShowTaskPopup={setShowTaskPopup}
-  onTaskCreated={(task) => {
-    setTasks((prev) => [
-      ...prev,
-      {
-        _id: task._id,
-        name: task.title,
-        deadline: task.dueDate,
-        user: "You",
-        completed: false,
-        action: `created task '${task.title}'`,
-        time: new Date().toISOString(),
-      },
-    ]);
-  }}
-/> */}
 
     </div>
     

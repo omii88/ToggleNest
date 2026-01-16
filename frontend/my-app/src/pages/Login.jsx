@@ -19,7 +19,10 @@ const Login = () => {
       });
 
       // 🔥 SAVE JWT TOKEN
+      //console.log("Login Response:", res.data);
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.user.name);
+      sessionStorage.setItem("loggedIn", "true");
 
       // optional: save user info
       // localStorage.setItem("user", JSON.stringify(res.data.user));
