@@ -1,72 +1,42 @@
-import React, { useEffect, useState } from "react";
-import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
-import Popup from "./Popup";
-import Topbar from "./Topbar";
+import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [popupMessage, setPopupMessage] = useState("");
-  const token = localStorage.getItem("token") ;
-
-  const username = localStorage.getItem("username") || "GUEST";
-  // 
-
-  const handleProtectedNavigation = (path) => {
-    const isLoggedIn = sessionStorage.getItem("loggedIn")  === "true";
- // fresh check
-    if (isLoggedIn) {
-      navigate(path);
-    } else {
-      setPopupMessage("Please sign up or login first");
-    }
-  };
-  
-  const closePopup = () => {
-    setPopupMessage("");
-    navigate("/signup"); // redirect after closing popup
-  };
 
   return (
-    <>
-      <nav className="navbar">
-        <div className="navbar__logo">ToggleNest</div>
+    <nav className="navbar">
+      <div className="navbar__logo" onClick={() => navigate("/")}>
+        ToggleNest
+      </div>
 
-        <ul className="navbar__links">
-          <li>
-            <button className="link-btn" onClick={() => handleProtectedNavigation("/dashboard")}>
-              Dashboard
-            </button>
-          </li>
-          <li>
-            <button className="link-btn" onClick={() => handleProtectedNavigation("/workspace")}>
-              WorkSpace
-            </button>
-          </li>
-          <li>
-            <button className="link-btn" onClick={() => handleProtectedNavigation("/sprints")}>
-              Create +
-            </button>
-          </li>
-        </ul>
-
-
-      {token ? <div className="user">
-        <span>{username}</span>
-        <img src="https://i.pravatar.cc/40" alt="user" />
-      </div> : (
-        <div className="navbar__actions">
-          <button className="btn-login" onClick={() => navigate("/login")}>
-            Login
+      <ul className="navbar__links">
+        <li>
+          <button className="link-btn" onClick={() => navigate("/dashboard")}>
+            Dashboard
           </button>
-          <button className="btn-signup" onClick={() => navigate("/signup")}>
-            Sign Up
+        </li>
+        <li>
+          <button className="link-btn" onClick={() => navigate("/workspace")}>
+            Workspace
           </button>
-        </div>)}
-      </nav>
+        </li>
+        <li>
+          <button className="link-btn" onClick={() => navigate("/sprints")}>
+            Create +
+          </button>
+        </li>
+      </ul>
 
-      {popupMessage && <Popup message={popupMessage} onClose={closePopup} />}
-    </>
+      <div className="navbar__actions">
+        <button className="btn-login" onClick={() => navigate("/login")}>
+          Login
+        </button>
+        <button className="btn-signup" onClick={() => navigate("/signup")}>
+          Sign Up
+        </button>
+      </div>
+    </nav>
   );
 };
 

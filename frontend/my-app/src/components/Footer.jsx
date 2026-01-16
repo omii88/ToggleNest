@@ -1,47 +1,41 @@
 // Footer.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import "../theme/Footer.css";
-import { 
-  FaFacebookF, 
-  FaTwitter, 
-  FaLinkedinIn, 
-  FaInstagram, 
-  FaEnvelope,
-  FaPhone 
-} from "react-icons/fa";
 
 const Footer = () => {
   return (
     <footer className="footer">
-      {/* Premium Top Section */}
+      {/* Top Section */}
       <div className="footer__container">
         <div className="footer__top">
-          {/* Brand Section */}
+          
+          {/* Brand */}
           <div className="footer__brand">
-            <div className="footer__logo">
-              ToggleNest
-            </div>
+            <div className="footer__logo">ToggleNest</div>
             <p className="footer__tagline">
               Modern workspace solutions for teams that move fast.
             </p>
           </div>
 
-          {/* Navigation Columns */}
+          {/* Navigation */}
           <div className="footer__nav">
             <h4 className="footer__nav-title">Product</h4>
             <ul className="footer__nav-links">
-              <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/workspaces">Workspaces</a></li>
-              <li><a href="/analytics">Analytics</a></li>
-              <li><a href="/integrations">Integrations</a></li>
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/workspace">Workspace</Link>
+              </li>
+              <li>
+                <Link to="/analytics">Analytics</Link>
+              </li>
+              {/* ❌ Integrations removed */}
             </ul>
           </div>
 
-          
         </div>
-
-        {/* Social & Contact */}
-        
       </div>
 
       {/* Bottom Bar */}
@@ -51,9 +45,9 @@ const Footer = () => {
             © 2026 ToggleNest. All rights reserved.
           </p>
           <div className="footer__bottom-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/cookies">Cookies</a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <Link to="/cookies">Cookies</Link>
           </div>
         </div>
       </div>
