@@ -38,9 +38,11 @@ exports.createTask = async (req, res) => {
  */
 exports.getMyTasks = async (req, res) => {
   try {
+    console.log("Fetching tasks for user ID:", req.user.id);
     const tasks = await Task.find({ assignedTo: req.user.id })
       .populate("projectId", "name")
       .sort({ createdAt: -1 });
+    console.log("Retrieved Tasks:", tasks);
 
     res.json(tasks);
   } catch (error) {

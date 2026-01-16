@@ -5,6 +5,9 @@ import StatCard from "../components/StatCard";
 import ActivityItem from "../components/ActivityItem";
 import "../theme/Dashboard.css";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import api from "../api/axios";
+import CreateTaskPopup from "../components/CreateTask";
+import CreateProjectPopup from "../components/CreateProject";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -12,12 +15,61 @@ const Dashboard = () => {
   const [sprints, setSprints] = useState([]);
   const [members] = useState(["You"]);
   const [workspaceStorage, setWorkspaceStorage] = useState({ used: 0, total: 10 });
+  const [showTaskPopup, setShowTaskPopup] = useState(false);
+  const [showProjectPopup, setShowProjectPopup] = useState(false);
+
+
 
   const [deleteModal, setDeleteModal] = useState({ visible: false, type: "", index: null });
 
   useEffect(() => {
     document.body.classList.toggle("modal-open", deleteModal.visible);
   }, [deleteModal.visible]);
+
+  const getCurrentTime = () => new Date().toISOString();
+
+  const addProject = (project) => {
+    if (!project.name) return;
+    const newProject = {
+      ...project,
+      user: project.user || "You",
+      size: 0.5,
+      action: `created project '${project.name}'`,
+      time: getCurrentTime(),
+    };
+    setProjects([...projects, newProject]);
+    setWorkspaceStorage(prev => ({ ...prev, used: prev.used + newProject.size }));
+  };
+
+  const deleteProject = (index) => {
+    const removed = projects[index];
+    setProjects(projects.filter((_, i) => i !== index));
+    setWorkspaceStorage(prev => ({ ...prev, used: prev.used - removed.size }));
+    setDeleteModal({ visible: false, type: "", index: null });
+  };
+
+  const addTask = (task) => {
+    if (!task.name) return;
+    const newTask = {
+      user: "You",
+      name: task.name,
+      deadline: task.deadline || "",
+      completed: false,
+      points: 1,
+      size: 0.1,
+      action: `created task '${task.name}'`,
+      time: getCurrentTime(),
+    };
+    setTasks([...tasks, newTask]);
+    setWorkspaceStorage(prev => ({ ...prev, used: prev.used + newTask.size }));
+  };
+
+  const deleteTask = (index) => {
+    const removed = tasks[index];
+    setTasks(tasks.filter((_, i) => i !== index));
+    setWorkspaceStorage(prev => ({ ...prev, used: prev.used - removed.size }));
+    setDeleteModal({ visible: false, type: "", index: null });
+  };
 
   const completedTasks = tasks.filter(t => t.completed).length;
   const totalTasks = tasks.length || 1; // prevent zero divide
@@ -27,23 +79,51 @@ const Dashboard = () => {
     { name: "Remaining", value: Math.max(totalTasks - completedTasks, 1) }
   ];
 
+
+
+// 🔥 Load tasks from backend
+const loadTasks = async () => {
+  try {
+    const res = await api.get("/tasks/my");
+    console.log("Loaded Tasks:", res.data);
+    setTasks(res.data);
+  } catch (err) {
+    console.error("Error loading tasks:", err);
+  }
+};
+
+useEffect(() => {
+  loadTasks();  // 🔥 Load tasks on page load
+}, []);
+
+
   return (
     <div className="dashboard-layout">
-      <Sidebar />
+      <Sidebar
+        openTaskPopup={() => setShowTaskPopup(true)}
+        openProjectPopup={() => setShowProjectPopup(true)}
+      />
 
       <div className="dashboard-content">
         <Topbar />
 
         <h2>Dashboard Overview</h2>
         <p className="muted-text">Welcome back! Here's what's happening.</p>
+        {/* <button
+  className="btn btn-primary"
+  onClick={() => setShowTaskPopup(true)}
+>
+  New Task
+</button> */}
+
 
         {/* STAT CARDS */}
         <div className="stats-grid">
           <StatCard title="Active Sprints" value={sprints.length} />
           <StatCard title="Total Tasks" value={tasks.length} />
+          <StatCard title="Completed Tasks" value={completedTasks} />
           <StatCard title="Deadlines" value={tasks.filter(t => t.deadline).length} />
           <StatCard title="My Projects" value={projects.length} />
-          <StatCard title="My Tasks" value={tasks.length} />
         </div>
 
         {/* ACTIVITY + CHART */}
@@ -54,12 +134,21 @@ const Dashboard = () => {
               <p className="empty-text">Create a project or task to see recent activity</p>
             ) : (
               <>
-                {tasks.map((task, i) => (
+                {tasks.map((task) => (
                   <ActivityItem
-                    key={i}
-                    user={task.user}
-                    action={task.action}
-                    time={task.time}
+                    key={task._id || task.name}
+                    user="You"
+                    action={`Created task: ${task.title || task.name}`}
+                    time={new Date(task.createdAt || task.time).toLocaleString()}
+                  />
+                ))}
+
+                {projects.map((project, i) => (
+                  <ActivityItem
+                    key={`project-${i}`}
+                    user={project.user}
+                    action={`Created project: ${project.name}`}
+                    time={project.time}
                   />
                 ))}
               </>
@@ -134,7 +223,39 @@ const Dashboard = () => {
         </div>
 
       </div>
+
+      
+             <CreateTaskPopup
+        showTaskPopup={showTaskPopup}
+        setShowTaskPopup={setShowTaskPopup}
+        onTaskCreated={(task) => {
+          setTasks((prev) => [
+            ...prev,
+            {
+              _id: task._id,
+              name: task.title,
+              deadline: task.dueDate,
+              user: "You",
+              completed: false,
+              action: `created task '${task.title}'`,
+              time: new Date().toISOString(),
+            },
+          ]);
+        }}
+      />
+
+      <CreateProjectPopup
+  show={showProjectPopup}
+  onClose={() => setShowProjectPopup(false)}
+  onProjectCreated={(project) => {
+    setProjects((prev) => [...prev, project]);
+  }}
+/>
+
+
+
     </div>
+    
   );
 };
 

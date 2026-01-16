@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../theme/Sidebar.css";
+import CreateTaskPopup from "../components/CreateTask";
+import CreateProjectPopup from "../components/CreateProject";
+
 
 const Sidebar = ({ addProject, addTask }) => {
   
@@ -62,13 +65,50 @@ const Sidebar = ({ addProject, addTask }) => {
 
         <div className="quick-actions">
           <p>Quick Actions</p>
-          <button onClick={() => setShowTaskPopup(true)}>+ New Task</button>
-          <button onClick={() => setShowProjectPopup(true)}>+ New Project</button>
+          <button
+  className="btn btn-primary"
+  onClick={() => setShowTaskPopup(true)}
+>
+ + New Task
+</button>
+          {/* <button onClick={() => setShowProjectPopup(true)}>+ New Project</button> */}
+          <button className="btn-primary" onClick={() => setShowProjectPopup(true)}>
+ + New Project
+</button>
+
         </div>
       </aside>
 
+       <CreateTaskPopup
+  showTaskPopup={showTaskPopup}
+  setShowTaskPopup={setShowTaskPopup}
+  onTaskCreated={(task) => {
+    setTasks((prev) => [
+      ...prev,
+      {
+        _id: task._id,
+        name: task.title,
+        deadline: task.dueDate,
+        user: "You",
+        completed: false,
+        action: `created task '${task.title}'`,
+        time: new Date().toISOString(),
+      },
+    ]);
+  }}
+/>
+
+<CreateProjectPopup
+  show={showProjectPopup}
+  onClose={() => setShowProjectPopup(false)}
+  onProjectCreated={(project) => {
+    setProjects((prev) => [...prev, project]);
+  }}
+/>
+
+
       {/* TASK POPUP */}
-      {showTaskPopup && (
+      {/* {showTaskPopup && (
         <div className="popup-overlay open">
           <div className="popup-card">
             <h3>Create New Task</h3>
@@ -91,9 +131,9 @@ const Sidebar = ({ addProject, addTask }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
-      {/* PROJECT POPUP */}
+      {/* PROJECT POPUP
       {showProjectPopup && (
         <div className="popup-overlay open">
           <div className="popup-card">
@@ -117,7 +157,7 @@ const Sidebar = ({ addProject, addTask }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };

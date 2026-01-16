@@ -9,14 +9,14 @@ const Topbar = () => {
         type="text"
         placeholder="Search tasks, projects..."
       />
-      <div className="user">
+      {/* <div className="user">
         <span>{username}</span>
         {username === "GUEST" ? (
           <span className="guest-emoji" role="img" aria-label="guest">👤</span>
         ) : (
           <img src="https://i.pravatar.cc/40" alt="user" />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
