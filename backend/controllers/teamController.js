@@ -119,17 +119,29 @@ exports.acceptInviteDirect = async (req, res) => {
   try {
     const invite = await Invitation.findOne({ token });
 
-    if (!invite) return res.send("<h2>❌ Invalid invite</h2>");
-    if (invite.expires < new Date()) return res.send("<h2>⏰ Invite expired</h2>");
-    if (invite.accepted) return res.send("<h2>✅ Invite already accepted</h2>");
+    if (!invite) {
+      return res.send("<h2>❌ Invalid invite</h2>");
+    }
 
-    // Automatically create the user
-    const user = await User.create({
-      name: invite.email.split("@")[0],
-      email: invite.email,
-      password: "changeme123",
-      role: invite.role
-    });
+    if (invite.expires < new Date()) {
+      return res.send("<h2>⏰ Invite expired</h2>");
+    }
+
+    if (invite.accepted) {
+      return res.send("<h2>✅ Invite already accepted</h2>");
+    }
+
+    // 🔑 CHECK IF USER ALREADY EXISTS
+    let user = await User.findOne({ email: invite.email });
+
+    if (!user) {
+      user = await User.create({
+        name: invite.email.split("@")[0],
+        email: invite.email,
+        password: "changeme123",
+        role: invite.role
+      });
+    }
 
     invite.accepted = true;
     invite.acceptedBy = user._id;
@@ -138,11 +150,12 @@ exports.acceptInviteDirect = async (req, res) => {
     return res.send(`
       <h2>🎉 Invite Accepted!</h2>
       <p>You are now part of the team.</p>
+      <p>Email: ${user.email}</p>
       <p>You can close this page.</p>
     `);
 
   } catch (err) {
-    console.error(err);
+    console.error("Invite accept error:", err);
     return res.send("<h2>⚠️ Something went wrong</h2>");
   }
 };
