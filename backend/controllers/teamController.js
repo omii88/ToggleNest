@@ -159,3 +159,25 @@ exports.acceptInviteDirect = async (req, res) => {
     return res.send("<h2>⚠️ Something went wrong</h2>");
   }
 };
+// CANCEL INVITE
+exports.cancelInvite = async (req, res) => {
+  try {
+    const invite = await Invitation.findById(req.params.id);
+
+    if (!invite) {
+      return res.status(404).json({ message: "Invite not found" });
+    }
+
+    // Optional: ensure only inviter can cancel
+    if (invite.invitedBy.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await invite.deleteOne();
+
+    res.json({ message: "Invite cancelled" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to cancel invite" });
+  }
+};
