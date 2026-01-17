@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
@@ -49,16 +50,28 @@ app.get("/api/test", (req, res) => {
 });
 
 // =========================
-// SERVE REACT FRONTEND (OPTIONAL)
+// SERVE REACT FRONTEND (OPTIONAL / SAFE)
 // =========================
-// Only needed if you deploy your frontend on the same server
-// Make sure your React build is in "frontend/build"
+// Only needed if you deploy the React frontend on the same server
+// Make sure your React build folder is at frontend/build
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "frontend/build")));
+  const buildPath = path.join(__dirname, "frontend/build");
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
-  });
+  if (fs.existsSync(buildPath)) {
+    // Serve static files
+    app.use(express.static(buildPath));
+
+    // Catch-all route for React
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(buildPath, "index.html"));
+    });
+
+    console.log("✅ React frontend serving enabled");
+  } else {
+    console.warn(
+      "⚠️ Frontend build folder not found, skipping React catch-all route"
+    );
+  }
 }
 
 // =========================
@@ -70,8 +83,6 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running on port ${PORT}`)
-    );
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err));
