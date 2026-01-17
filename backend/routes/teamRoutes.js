@@ -13,8 +13,8 @@ router.delete("/member/:id", auth, team.deleteMember);
 router.get("/invite/accept/:token", team.acceptInviteDirect);
 
 
-// Invite routes (no auth)
-router.get("/invite/:token", team.getInviteByToken);
-router.post("/invite/accept/:token", team.acceptInvite);
+// // Invite routes (no auth)
+// router.get("/invite/:token", team.getInviteByToken);
+// router.post("/invite/accept/:token", team.acceptInvite);
 
 module.exports = router;

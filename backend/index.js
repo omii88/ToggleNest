@@ -1,8 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
@@ -15,10 +13,9 @@ const app = express();
 app.use(express.json());
 
 // CORS configuration
-// Allows your React frontend to call the backend
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "*", // set your frontend URL in Railway env
+    origin: process.env.FRONTEND_URL || "*", // optional, allows any frontend
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -31,7 +28,6 @@ const authRoutes = require("./routes/authRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const workspaceRoutes = require("./routes/workspaceRoutes");
-// const sprintRoutes = require("./routes/sprintRoutes");
 const userRoutes = require("./routes/userRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 
@@ -40,7 +36,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/workspaces", workspaceRoutes);
-// app.use("/api/sprints", sprintRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/team", teamRoutes);
 
@@ -48,31 +43,6 @@ app.use("/api/team", teamRoutes);
 app.get("/api/test", (req, res) => {
   res.json({ msg: "API working 🚀" });
 });
-
-// =========================
-// SERVE REACT FRONTEND (OPTIONAL / SAFE)
-// =========================
-// Only needed if you deploy the React frontend on the same server
-// Make sure your React build folder is at frontend/build
-if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "frontend/build");
-
-  if (fs.existsSync(buildPath)) {
-    // Serve static files
-    app.use(express.static(buildPath));
-
-    // Catch-all route for React
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(buildPath, "index.html"));
-    });
-
-    console.log("✅ React frontend serving enabled");
-  } else {
-    console.warn(
-      "⚠️ Frontend build folder not found, skipping React catch-all route"
-    );
-  }
-}
 
 // =========================
 // CONNECT TO MONGODB
