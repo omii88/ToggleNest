@@ -14,7 +14,7 @@ const authRoutes = require("./routes/authRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const workspaceRoutes = require("./routes/workspaceRoutes");
-const sprintRoutes = require("./routes/sprintRoutes");
+// const sprintRoutes = require("./routes/sprintRoutes");
 const userRoutes = require("./routes/userRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 
@@ -23,7 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/workspaces", workspaceRoutes);
-app.use("/api/sprints", sprintRoutes);
+// app.use("/api/sprints", sprintRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/team", teamRoutes);
 
