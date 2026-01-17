@@ -1,13 +1,20 @@
 const express = require("express");
 const router = express.Router();
-
 const auth = require("../middleware/authMiddleware");
-// const { createSprint, getMySprints } = require("../controllers/sprintController");
 
-// CREATE SPRINT
-// router.post("/", auth, createSprint);
+const {
+  getSprints,
+  createSprint,
+  deleteSprint
+} = require("../controllers/SprintController");
 
-// GET SPRINTS OF LOGGED-IN USER
-router.get("/", auth, getMySprints);
+// GET all sprints
+router.get("/", auth, getSprints);
+
+// CREATE sprint
+router.post("/", auth, createSprint);
+
+// DELETE sprint
+router.delete("/:id", auth, deleteSprint);
 
 module.exports = router;
