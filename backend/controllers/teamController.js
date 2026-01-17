@@ -21,9 +21,6 @@ exports.getMembers = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch members" });
   }
 };
-
-// GET INVITATIONS
-// GET INVITATIONS (ONLY PENDING)
 exports.getInvitations = async (req, res) => {
   try {
     const invites = await Invitation.find({ accepted: { $ne: true } });
@@ -32,6 +29,7 @@ exports.getInvitations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch invites" });
   }
 };
+
 
 
 // SEND INVITE
@@ -60,23 +58,25 @@ exports.sendInvite = async (req, res) => {
       }
     });
 
-    // Email content
-    const mailOptions = {
-      from: `"ToggleNest Team" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "You are invited to join a team!",
-      html: `
-        <p>Hello,</p>
-        <p>${req.user.email} has invited you to join their team on ToggleNest.</p>
-        <p>Role: <b>${role}</b></p>
-        <p>Click the button below to accept the invite:</p>
-        <a href="${process.env.BACKEND_URL}/api/team/invite/accept/${token}" 
-           style="display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:5px;">
-           Accept Invite
-        </a>
-        <p>This invite will expire in 14 days.</p>
-      `
-    };
+   const acceptLink = `${process.env.BACKEND_URL}/api/team/invite/accept/${token}`;
+
+// Then, define the mail options
+const mailOptions = {
+  from: `"ToggleNest Team" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: "You are invited to join a team!",
+  html: `
+    <p>Hello,</p>
+    <p>${req.user.email} has invited you to join their team on ToggleNest.</p>
+    <p>Role: <b>${role}</b></p>
+    <p>Click the button below to accept the invite:</p>
+    <a href="${acceptLink}" 
+       style="display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:5px;">
+       Accept Invite
+    </a>
+    <p>This invite will expire in 14 days.</p>
+  `
+};
 
     // Send the email
     await transporter.sendMail(mailOptions);
